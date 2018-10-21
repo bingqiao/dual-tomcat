@@ -16,8 +16,8 @@ RUN groupadd -r tomcat && \
  echo 'user2:letmein' | chpasswd
 
 # Install Tomcat servers
-ARG TOMCAT_MAJOR
-ARG TOMCAT_VERSION
+ARG TOMCAT_MAJOR=8
+ARG TOMCAT_VERSION=8.5.34
 
 RUN wget http://mirror.linux-ia64.org/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && \
  tar -xvf apache-tomcat-${TOMCAT_VERSION}.tar.gz && \
