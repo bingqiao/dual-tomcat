@@ -5,21 +5,8 @@ MAINTAINER bingqiao <bqiaodev@gmail.com>
 # Install prepare infrastructure
 RUN yum -y update && \
  yum -y install wget && \
- yum -y install tar
-
-ENV JAVA_HOME /opt/java
-ENV PATH $PATH:$JAVA_HOME/bin
-
-# Install Oracle Java8
-ARG JAVA_VERSION
-ARG JAVA_BUILD
-ARG JAVA_DL_HASH
-
-RUN wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" \
- http://download.oracle.com/otn-pub/java/jdk/${JAVA_BUILD}/${JAVA_DL_HASH}/jdk-${JAVA_VERSION}-linux-x64.tar.gz && \
- tar -xvf jdk-${JAVA_VERSION}-linux-x64.tar.gz && \
- rm jdk*.tar.gz && \
- mv jdk* ${JAVA_HOME}
+ yum -y install tar && \
+ yum -y install java-1.8.0-openjdk
 
 # Create group and users
 RUN groupadd -r tomcat && \
@@ -46,12 +33,12 @@ RUN wget http://mirror.linux-ia64.org/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TO
 
 USER user1
 RUN echo 'export CATALINA_HOME=$HOME/tomcat' >>~/.bash_profile && \
- echo 'export JAVA_HOME=/opt/java' >>~/.bash_profile && \
+ echo "export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")" >>~/.bash_profile && \
  echo 'export PATH=$PATH:$JAVA_HOME/bin:$CATALINA_HOME/bin' >>~/.bash_profile
 
 USER user2
 RUN echo 'export CATALINA_HOME=$HOME/tomcat' >>~/.bash_profile && \
- echo 'export JAVA_HOME=/opt/java' >>~/.bash_profile && \
+ echo "export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")" >>~/.bash_profile && \
  echo 'export PATH=$PATH:$JAVA_HOME/bin:$CATALINA_HOME/bin' >>~/.bash_profile
 
 USER root
